@@ -1,0 +1,109 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import GravioLogo from '/gravio.png';
+import { collection, getDocs, doc, updateDoc, increment, query, where } from "firebase/firestore";
+import { db } from "../firebase";
+
+function Tasks() {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [tasks, setTasks] = useState([]);
+  const [doneTasks, setDoneTasks] = useState(new Set());
+
+  useEffect(() => {
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    const tgUser = tg.initDataUnsafe?.user;
+    setUser(tgUser);
+
+    if (!tgUser) return;
+
+    const fetchTasks = async () => {
+      try {
+        const tasksSnap = await getDocs(collection(db, "tasks"));
+        const tasksData = tasksSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setTasks(tasksData);
+
+        const doneSnap = await getDocs(query(collection(db, "done"), where("by", "==", tgUser.id)));
+        const doneIds = new Set(doneSnap.docs.map(doc => doc.data().taskId));
+        setDoneTasks(doneIds);
+
+      } catch (err) {
+        console.error("Error fetching tasks or done tasks:", err);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  const completeTask = async (task) => {
+    if (!user) return;
+
+    try {
+      const userRef = doc(db, "users", user.id.toString());
+      await updateDoc(userRef, {
+        balance: increment(task.reward)
+      });
+
+      const doneRef = doc(collection(db, "done"));
+      await updateDoc(doneRef, {
+        by: user.id,
+        taskId: task.id
+      }).catch(async () => {
+        await setDoc(doneRef, {
+          by: user.id,
+          taskId: task.id
+        });
+      });
+
+      setDoneTasks(prev => new Set(prev).add(task.id));
+
+      alert(`Task completed! ${task.reward} added to your balance.`);
+
+    } catch (err) {
+      console.error("Error updating balance or done task:", err);
+    }
+  };
+
+  const goToHome = () => navigate("/");
+  const goToReward = () => navigate("/reward");
+  const gotoReferral = () => navigate("/referral");
+  const goToTasks = () => navigate("/tasks");
+
+  return (
+    <div className="tasks">
+      <div className="tasks-navbar">
+        <h3>{user?.first_name || "Gravio User"}</h3>
+        <img src={user?.photo_url || GravioLogo} alt="User Avatar" className="home-avatar" />
+      </div>
+
+      <div className="tasks-content">
+        {tasks.length === 0 ? (
+          <p className="no-tasks">No tasks available</p>
+        ) : (
+          tasks.map(task => (
+            <div
+              key={task.id}
+              className="task-item"
+              style={{ display: doneTasks.has(task.id) ? "none" : "flex" }}
+            >
+              <h4 className="task-title">{task.name}</h4>
+              <p className="task-desc">{task.description}</p>
+              <span className="task-reward">Reward: {task.reward}</span>
+              <button className="task-complete" onClick={() => completeTask(task)}>Complete Task</button>
+            </div>
+          ))
+        )}
+      </div>
+
+      <div className="tasks-footer">
+        <button onClick={goToHome}><i className="fa-solid fa-home"></i>Home</button>
+        <button onClick={goToReward}><i className="fa-solid fa-gift"></i>Reward</button>
+        <button onClick={gotoReferral}><i className="fa-solid fa-user"></i>Referral</button>
+        <button onClick={goToTasks} className="dodgerblue"><i className="fa-solid fa-list"></i>Tasks</button>
+      </div>
+    </div>
+  )
+}
+
+export default Tasks;
