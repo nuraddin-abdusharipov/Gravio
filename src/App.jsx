@@ -16,6 +16,7 @@ function App() {
     if (!tg) return;
     
     tg.ready();
+    tg.expand();
     const tgUser = tg.initDataUnsafe?.user;
     setUser(tgUser);
     
@@ -23,7 +24,6 @@ function App() {
     if (tgUser && ADMIN_IDS.includes(tgUser.id.toString())) {
       setIsAdmin(true);
     }
-    tg.expand();
   }, []);
 
   return (
