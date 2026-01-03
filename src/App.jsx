@@ -23,6 +23,7 @@ function App() {
     if (tgUser && ADMIN_IDS.includes(tgUser.id.toString())) {
       setIsAdmin(true);
     }
+    tg.expand();
   }, []);
 
   return (
