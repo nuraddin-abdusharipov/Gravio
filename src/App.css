@@ -123,6 +123,7 @@ body{
   gap: 10px;
   border-radius: 10px;
   border: none;
+  font-size: 16px;
 }
 
 .home-link:hover{
@@ -351,8 +352,7 @@ body{
 }
 
 .task-item {
-  background-color: #ffffff;
-  border: 1px solid #ddd;
+  background-color: #434343;
   border-radius: 10px;
   padding: 12px 16px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.08);
@@ -399,16 +399,15 @@ body{
 }
 
 .admin-navbar {
-  height: 56px;
+  height: 60px;
   display: flex;
   align-items: center;
-  padding: 0 14px;
   background: #020617;
   border-bottom: 1px solid rgba(255,255,255,0.08);
+  justify-content: space-between;
 }
 
 .admin-navbar h3 {
-  flex: 1;
   text-align: center;
   color: #3b82f6;
 }
@@ -418,6 +417,7 @@ body{
   border: none;
   color: #93c5fd;
   cursor: pointer;
+  margin-right: 300px;
 }
 
 .admin-tabs {
@@ -454,12 +454,18 @@ body{
   border-radius: 10px;
   padding: 10px;
   margin-bottom: 10px;
+} 
+
+.edit-input{
+  width: 100px;
 }
 
 .table-container {
   background: rgba(30,41,59,0.6);
   border-radius: 14px;
   overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .users-table,
@@ -502,4 +508,13 @@ body{
   border: none;
   background: linear-gradient(135deg,#3b82f6,#8b5cf6);
   color: white;
+}
+
+.admin-panel .table-container {
+  overflow-x: hidden;     
+}
+
+.table-container:active {
+  cursor: grabbing;
+  -webkit-overflow-scrolling: touch;
 }

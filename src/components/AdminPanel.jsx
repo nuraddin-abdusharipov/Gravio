@@ -41,10 +41,10 @@ function AdminPanel({ isAdmin }) {
   });
 
   useEffect(() => {
-    if (!isAdmin) {
-      navigate("/");
-      return;
-    }
+    // if (!isAdmin) {
+    //   navigate("/");
+    //   return;
+    // }
 
     fetchCounts();
     fetchUsers();
@@ -122,16 +122,15 @@ function AdminPanel({ isAdmin }) {
   };
 
   const addTask = async () => {
-    if (!newTask.name || !newTask.description || !newTask.reward) return;
+    if (!newTask.name || !newTask.reward) return;
 
     await addDoc(collection(db, "tasks"), {
       name: newTask.name,
-      description: newTask.description,
       reward: Number(newTask.reward),
       createdAt: new Date()
     });
 
-    setNewTask({ name: "", description: "", reward: "" });
+    setNewTask({ name: "", reward: "" });
     fetchTasks();
     fetchCounts();
   };
@@ -181,7 +180,6 @@ function AdminPanel({ isAdmin }) {
               <table className="users-table">
                 <thead>
                   <tr>
-                    <th>ID</th>
                     <th>Username</th>
                     <th>Balance</th>
                     <th>Action</th>
@@ -194,8 +192,7 @@ function AdminPanel({ isAdmin }) {
                     )
                     .map(u => (
                       <tr key={u.id}>
-                        <td>{u.id.slice(0, 6)}...</td>
-                        <td>{u.username || "N/A"}</td>
+                        <td>{u.username || "User"}</td>
                         <td>
                           {editingUser?.id === u.id ? (
                             <input
@@ -248,14 +245,6 @@ function AdminPanel({ isAdmin }) {
                 placeholder="Task name"
                 value={newTask.name}
                 onChange={e => setNewTask({ ...newTask, name: e.target.value })}
-              />
-              <textarea
-                className="form-textarea"
-                placeholder="Description"
-                value={newTask.description}
-                onChange={e =>
-                  setNewTask({ ...newTask, description: e.target.value })
-                }
               />
               <input
                 className="form-input"

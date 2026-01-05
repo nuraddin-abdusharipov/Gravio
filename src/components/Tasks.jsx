@@ -88,7 +88,6 @@ function Tasks() {
               style={{ display: doneTasks.has(task.id) ? "none" : "flex" }}
             >
               <h4 className="task-title">{task.name}</h4>
-              <p className="task-desc">{task.description}</p>
               <span className="task-reward">Reward: {task.reward}</span>
               <button className="task-complete" onClick={() => completeTask(task)}>Complete Task</button>
             </div>
