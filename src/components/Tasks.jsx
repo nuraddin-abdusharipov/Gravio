@@ -40,30 +40,34 @@ function Tasks() {
     if (!user) return;
 
     try {
-      const userRef = doc(db, "users", user.id.toString());
-      await updateDoc(userRef, {
-        balance: increment(task.reward)
+      const response = await fetch("https://backend-url/check-subscription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, channelUsername: task.channel })
       });
 
+      const data = await response.json();
+      alert(data.message);
+
+      if (!data.subscribed) return;
+
+      const userRef = doc(db, "users", String(user.id));
       const doneRef = doc(collection(db, "done"));
-      await updateDoc(doneRef, {
-        by: user.id,
-        taskId: task.id
-      }).catch(async () => {
-        await setDoc(doneRef, {
-          by: user.id,
-          taskId: task.id
-        });
-      });
 
-      setDoneTasks(prev => new Set(prev).add(task.id));
+      await updateDoc(userRef, { balance: increment(task.reward) });
+      await setDoc(doneRef, { by: user.id, taskId: task.id, channel: task.channel });
+
+      setDoneTasks(prev => new Set([...prev, task.id]));
 
       alert(`Task completed! ${task.reward} added to your balance.`);
 
     } catch (err) {
-      console.error("Error updating balance or done task:", err);
+      console.error("Error completing task:", err);
+      alert("⚠️ ERROR!");
     }
   };
+
+
 
   const goToHome = () => navigate("/");
   const goToReward = () => navigate("/reward");
@@ -82,17 +86,16 @@ function Tasks() {
           <p className="no-tasks">No tasks available</p>
         ) : (
           tasks.map(task => (
-            <div
-              key={task.id}
-              className="task-item"
-              style={{ display: doneTasks.has(task.id) ? "none" : "flex" }}
-            >
-              <h4 className="task-title">{task.name}</h4>
-              <span className="task-reward">Reward: {task.reward}</span>
-              <button className="task-complete" onClick={() => completeTask(task)}>Complete Task</button>
-            </div>
+            !doneTasks.has(task.id) && (
+              <div key={task.id} className="task-item">
+                <h4 className="task-title">{task.name}</h4>
+                <span className="task-reward">Reward: {task.reward}</span>
+                <button className="task-complete" onClick={() => completeTask(task)}>Complete Task</button>
+              </div>
+            )
           ))
         )}
+
       </div>
 
       <div className="tasks-footer">

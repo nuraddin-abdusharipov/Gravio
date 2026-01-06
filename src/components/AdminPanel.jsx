@@ -13,6 +13,7 @@ import {
   addDoc
 } from "firebase/firestore";
 import { db } from "../firebase";
+import { channelPost } from "telegraf/filters";
 
 function AdminPanel({ isAdmin }) {
   const navigate = useNavigate();
@@ -127,10 +128,11 @@ function AdminPanel({ isAdmin }) {
     await addDoc(collection(db, "tasks"), {
       name: newTask.name,
       reward: Number(newTask.reward),
+      channelPost: newTask.channel,
       createdAt: new Date()
     });
 
-    setNewTask({ name: "", reward: "" });
+    setNewTask({ name: "", reward: "", channel: "" });
     fetchTasks();
     fetchCounts();
   };
@@ -242,6 +244,7 @@ function AdminPanel({ isAdmin }) {
             <div className="add-task-form">
               <input
                 className="form-input"
+                type="text"
                 placeholder="Task name"
                 value={newTask.name}
                 onChange={e => setNewTask({ ...newTask, name: e.target.value })}
@@ -255,6 +258,15 @@ function AdminPanel({ isAdmin }) {
                   setNewTask({ ...newTask, reward: e.target.value })
                 }
               />
+              <input
+                className="form-input"
+                type="text"
+                placeholder="Reward"
+                value={newTask.reward}
+                onChange={e =>
+                  setNewTask({ ...newTask, channel: e.target.value })
+                }
+              />
               <button className="add-btn" onClick={addTask}>
                 Add Task
               </button>
@@ -266,6 +278,7 @@ function AdminPanel({ isAdmin }) {
                   {tasks.map(t => (
                     <tr key={t.id}>
                       <td>{t.name}</td>
+                      <td>{t.channel}</td>
                       <td>{t.reward}</td>
                       <td>
                         <button className="delete-btn" onClick={() => deleteTask(t.id)}>
