@@ -144,6 +144,10 @@ body::-webkit-scrollbar {
   color: dodgerblue;
 }
 
+.dodgerblue i {
+  color: dodgerblue;
+}
+
 .reward {
   max-width: 400px;
   width: 100%;
