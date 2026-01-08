@@ -38,7 +38,8 @@ function Reward() {
             referrals.push({
               id: refId,
               username: refUserData.username,
-              balance: refUserData.balance
+              balance: refUserData.balance,
+              income: refUserData.income || 0
             });
           }
         }
@@ -65,12 +66,14 @@ function Reward() {
     <div className="referral">
       <div className="referral-navbar">
         <h3>{user?.first_name || "Gravio User"}</h3>
-        <img src={user?.photo_url || GravioLogo} alt="User Avatar" className="home-avatar" />
+        {user?.photo_url && <img src={user.photo_url} alt="User Avatar" className="home-avatar" /> || <div src={GravioLogo} alt="User Avatar" className="home-avatar" >G</div>}
       </div>
 
       <div className="referral-content">
-        <input type="text" readOnly value={`https://t.me/GravioToken_bot?start=${user?.id}`} onClick={copy} />
-        <button onClick={copy}>Copy</button>
+        <div className="ref">
+          <input type="text" readOnly value={`https://t.me/GravioToken_bot?start=ref${user?.id}`} onClick={copy} />
+          <button onClick={copy}>Copy</button>
+        </div>
 
         <div className="referral-users">
           {referralUsers.length === 0 ? (
@@ -80,6 +83,7 @@ function Reward() {
               <div key={refUser.id} className="referrals">
                 <div className="referrals-div"><span>Username: </span>{refUser.username}</div>
                 <div className="referrals-div"><span>Balance: </span>{refUser.balance}</div>
+                <div className="referrals-div"><span>Income: </span>{refUser.income}</div>
               </div>
             ))
           )}

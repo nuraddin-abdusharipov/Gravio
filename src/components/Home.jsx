@@ -30,10 +30,10 @@ function Home({ isAdmin, user: propUser }) {
 
     let count = 0;
     const countRef = Number(userid);
-    if (countRef <= 1000000) count = 200;
-    else if (countRef <= 10000000) count = 150;
-    else if (countRef <= 50000000) count = 100;
-    else count = 50;
+    if (countRef <= 1000000) count = 20000;
+    else if (countRef <= 10000000) count = 15000;
+    else if (countRef <= 50000000) count = 10000;
+    else count = 5000;
 
     const fetchUserData = async () => {
       try {
@@ -71,7 +71,7 @@ function Home({ isAdmin, user: propUser }) {
             className="home-avatar"
           />
         ) : (
-          <img src={GravioLogo} alt="User Avatar" className="home-avatar" />
+          <div className="home-avatar" >G</div>
         )}
       </div>
 
@@ -82,7 +82,7 @@ function Home({ isAdmin, user: propUser }) {
         <div className="home-balance">
           Balance: {balance || 0} <img src={GravioLogo} alt="Gravio Token" />
         </div>
-        <a href="#" className="home-link">
+        <a href="https://t.me/GravioToken" className="home-link">
           <i className="fa-solid fa-users"></i> Join our community
         </a>
         <button onClick={goToReward} className="home-link">
@@ -90,7 +90,7 @@ function Home({ isAdmin, user: propUser }) {
         </button>
         
         {isAdmin && (
-          <button onClick={goToAdmin} className="home-link admin-btn">
+          <button onClick={goToAdmin} className="home-link">
             <i className="fa-solid fa-lock"></i> Admin Panel
           </button>
         )}

@@ -42,10 +42,10 @@ function AdminPanel({ isAdmin }) {
   });
 
   useEffect(() => {
-    // if (!isAdmin) {
-    //   navigate("/");
-    //   return;
-    // }
+    if (!isAdmin) {
+      navigate("/");
+      return;
+    }
 
     fetchCounts();
     fetchUsers();

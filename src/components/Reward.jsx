@@ -30,10 +30,10 @@ function Reward() {
     setUser(user);
     const userid = user?.id.toString();
     const countRef = Number(userid);
-    if (countRef <= 1000000) count = 200;
-    else if (countRef <= 10000000) count = 150;
-    else if (countRef <= 50000000) count = 100;
-    else count = 50;
+    if (countRef <= 1000000) count = 20000;
+    else if (countRef <= 10000000) count = 15000;
+    else if (countRef <= 50000000) count = 10000;
+    else count = 5000;
   }, []);
 
   setTimeout(() => {
@@ -44,21 +44,21 @@ function Reward() {
     localStorage.setItem("reward", count.toString());
   }, 4200);
 
+  setTimeout(() => {
+    document.getElementById("r1").style.background = "url('../public/checked.gif') no-repeat center";
+  }, 3200)
+
   return (
     <div className="reward">
       <div className="reward-navbar">
         <h3>{user?.first_name || "Gravio User"}</h3>
-        {user?.photo_url && <img src={user.photo_url} alt="User Avatar" className="home-avatar" /> || <img src={GravioLogo} alt="User Avatar" className="home-avatar" />}
+        {user?.photo_url && <img src={user.photo_url} alt="User Avatar" className="home-avatar" /> || <div src={GravioLogo} alt="User Avatar" className="home-avatar" >G</div>}
       </div>
       <div className="reward-content">
         <div className="reward-calculating">
           <h4 id="cal">Reward is calculating...</h4>
         </div>
-        <div className="reward-checked">
-          <div className="reward-checked-line"></div>
-          <div className="reward-checked-line"></div>
-          <div className="reward-checked-line"></div>
-          <div className="reward-checked-line"></div>
+        <div id="r1" className="reward-checked">
         </div>
       </div>
       <div className="reward-footer">

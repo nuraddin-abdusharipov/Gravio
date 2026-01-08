@@ -19,11 +19,10 @@ function App() {
     tg.expand();
     const tgUser = tg.initDataUnsafe?.user;
     setUser(tgUser);
-    setIsAdmin(true);
-    // const ADMIN_IDS = ['7787131118']; 
-    // if (tgUser && ADMIN_IDS.includes(tgUser.id.toString())) {
-    //   setIsAdmin(true);
-    // }
+    const ADMIN_IDS = ['7787131118']; 
+    if (tgUser && ADMIN_IDS.includes(tgUser.id.toString())) {
+      setIsAdmin(true);
+    }
   }, []);
 
   return (

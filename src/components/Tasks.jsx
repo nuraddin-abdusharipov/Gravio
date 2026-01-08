@@ -40,29 +40,35 @@ function Tasks() {
     if (!user) return;
 
     try {
-      const response = await fetch("https://backend-url/check-subscription", {
+      const response = await fetch("https://gravio2.onrender.com/check-subscription", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id, channelUsername: task.channel })
+        body: JSON.stringify({ userId: user.id, channel: task.channel, reward: task.reward })
       });
 
       const data = await response.json();
-      alert(data.message);
 
-      if (!data.subscribed) return;
+      if (!data.success || !data.subscribed) {
+        alert(data.message || "You have not subscribed!");
+        return;
+      }
 
       const userRef = doc(db, "users", String(user.id));
-      const doneRef = doc(collection(db, "done"));
-
       await updateDoc(userRef, { balance: increment(task.reward) });
-      await setDoc(doneRef, { by: user.id, taskId: task.id, channel: task.channel });
+
+      const doneRef = doc(collection(db, "done"));
+      await setDoc(doneRef, {
+        by: user.id,
+        taskId: task.id,
+        channel: task.channel,
+        timestamp: new Date()
+      });
 
       setDoneTasks(prev => new Set([...prev, task.id]));
-
-      alert(`Task completed! ${task.reward} added to your balance.`);
+      alert(`Success! ${task.reward} added to your balance.`);
 
     } catch (err) {
-      console.error("Error completing task:", err);
+      console.error("Xatolik:", err);
       alert("⚠️ ERROR!");
     }
   };
@@ -78,34 +84,37 @@ function Tasks() {
     <div className="tasks">
       <div className="tasks-navbar">
         <h3>{user?.first_name || "Gravio User"}</h3>
-        <img src={user?.photo_url || GravioLogo} alt="User Avatar" className="home-avatar" />
+        {user?.photo_url && <img src={user.photo_url} alt="User Avatar" className="home-avatar" /> || <div src={GravioLogo} alt="User Avatar" className="home-avatar" >G</div>}
       </div>
 
       <div className="tasks-content">
-        {tasks.length === 0 ? (
-          <p className="no-tasks">No tasks available</p>
-        ) : (
-          tasks.map(task => (
-            !doneTasks.has(task.id) && (
-              <div key={task.id} className="task-item">
-                <h4 className="task-title">{task.name}</h4>
-                <span className="task-reward">Reward: {task.reward}</span>
-                <button className="task-complete" onClick={() => completeTask(task)}>Complete Task</button>
-              </div>
-            )
-          ))
-        )}
+          {tasks.length === 0 ? (
+            <p className="no-tasks">No tasks available</p>
+          ) : (
+            tasks.map(task => (
+              !doneTasks.has(task.id) && (
+                <div key={task.id} className="task-item">
+                  <i class="fa-solid fa-list-check"></i>
+                  <div className="font">
+                    <p className="task-title">{task.name}</p>
+                    <p className="tast-reward">+{task.reward}</p>
+                  </div>
+                  <button className="task-complete" onClick={() => completeTask(task)}>Check</button>
+                </div>
+              )
+            ))
+          )}
 
-      </div>
+        </div>
 
-      <div className="tasks-footer">
-        <button onClick={goToHome}><i className="fa-solid fa-home"></i>Home</button>
-        <button onClick={goToReward}><i className="fa-solid fa-gift"></i>Reward</button>
-        <button onClick={gotoReferral}><i className="fa-solid fa-user"></i>Referral</button>
-        <button onClick={goToTasks} className="dodgerblue"><i className="fa-solid fa-list"></i>Tasks</button>
+        <div className="tasks-footer">
+          <button onClick={goToHome}><i className="fa-solid fa-home"></i>Home</button>
+          <button onClick={goToReward}><i className="fa-solid fa-gift"></i>Reward</button>
+          <button onClick={gotoReferral}><i className="fa-solid fa-user"></i>Referral</button>
+          <button onClick={goToTasks} className="dodgerblue"><i className="fa-solid fa-list"></i>Tasks</button>
+        </div>
       </div>
-    </div>
-  )
+      )
 }
 
-export default Tasks;
+      export default Tasks;
