@@ -260,8 +260,8 @@ function AdminPanel({ isAdmin }) {
               <input
                 className="form-input"
                 type="text"
-                placeholder="Reward"
-                value={newTask.reward}
+                placeholder="Url Channel Post"
+                value={newTask.channel}
                 onChange={e =>
                   setNewTask({ ...newTask, channel: e.target.value })
                 }
