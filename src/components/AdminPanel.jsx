@@ -127,7 +127,7 @@ function AdminPanel({ isAdmin }) {
     await addDoc(collection(db, "tasks"), {
       name: newTask.name,
       reward: Number(newTask.reward),
-      channelPost: newTask.channel,
+      channel: newTask.channel,
       createdAt: new Date()
     });
 
