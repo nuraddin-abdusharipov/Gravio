@@ -43,7 +43,7 @@ function Tasks() {
       const response = await fetch("https://gravio2.onrender.com/check-subscription", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id, channel: task.channel, reward: task.reward })
+        body: JSON.stringify({taskId: task.id, userId: user.id, channel: task.channel, reward: task.reward })
       });
 
       const data = await response.json();
