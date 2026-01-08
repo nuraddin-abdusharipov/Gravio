@@ -13,7 +13,6 @@ import {
   addDoc
 } from "firebase/firestore";
 import { db } from "../firebase";
-import { channelPost } from "telegraf/filters";
 
 function AdminPanel({ isAdmin }) {
   const navigate = useNavigate();
